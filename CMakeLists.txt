@@ -5,3 +5,9 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(MIRCertificationManager main.cpp utils/RedisUtil.cpp)
 target_link_libraries(MIRCertificationManager hiredis)
+
+add_executable(installCertificate installCertificate.cpp
+        utils/FileUtils.cpp
+        utils/RedisUtil.cpp
+        utils/NDNCertificationUtil.cpp)
+target_link_libraries(installCertificate ndn-cxx boost_system hiredis)
