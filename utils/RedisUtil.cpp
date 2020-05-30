@@ -99,7 +99,7 @@ int RedisUtil::setLifeTime(const std::string &key, long lifetime) {
  * @param key
  * @return
  *      -2 => 返回-2表示key对应的条目不存在（可能是本来就没有这个条目，或者本来有一个条目，但是因为设置了存活期，其存活期已到，被移除了）
- *      -1 => 返回-1表示key对应的条目存在，但是没有设置过存活期，是持久保存的
+     *      -1 => 返回-1表示key对应的条目存在，但是没有设置过存活期，是持久保存的
  *    >= 0 => 返回大于等于0的值表示key对应的条目存在，且其剩余的存活时间为返回的值，单位为毫秒
  */
 long RedisUtil::getRemainingTime(const std::string &key) {
