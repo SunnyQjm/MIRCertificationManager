@@ -34,7 +34,7 @@ public:
      * @param port  端口
      * @return
      */
-    bool connect(const std::string &host, int port);
+    bool connect(const std::string &host = "127.0.0.1", int port = 6379);
 
     /**
      * 安装证书操作

@@ -2,8 +2,8 @@
 // Created by mingj on 2020/5/30.
 //
 
-#include "utils/RedisUtil.h"
 #include "utils/FileUtils.h"
+#include "utils/NDNCertificationUtil.h"
 #include <iostream>
 
 using namespace std;
@@ -17,6 +17,8 @@ int main(int argc, char **argv) {
     string certStr = FileUtils::readFile2String(argv[2]);
     cout << "Read cert: " << endl << certStr << endl;
 
-    RedisUtil redisUtil;
-
+    NDNCertificationUtil ndnCertificationUtil;
+    ndnCertificationUtil.connect();
+    auto result = ndnCertificationUtil.installCert(certStr);
+    cout << "install cert result: " << result << endl;
 }
