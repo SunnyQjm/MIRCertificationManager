@@ -11,3 +11,9 @@ add_executable(installCertificate installCertificate.cpp
         utils/RedisUtil.cpp
         utils/NDNCertificationUtil.cpp)
 target_link_libraries(installCertificate ndn-cxx boost_system hiredis)
+
+add_executable(uninstallCertificate uninstallCertificate.cpp
+        utils/FileUtils.cpp
+        utils/RedisUtil.cpp
+        utils/NDNCertificationUtil.cpp)
+target_link_libraries(uninstallCertificate ndn-cxx boost_system hiredis)
