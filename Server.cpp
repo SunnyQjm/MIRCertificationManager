@@ -33,10 +33,14 @@ void Server::run() {
 }
 
 void Server::onInterest(const InterestFilter &filter, const Interest &interest) {
-    if (interest.getApplicationParameters().value_size() <= 0)
+    std::cout << "onInterest: " << interest.toUri() << std::endl;
+    if (interest.getApplicationParameters().value_size() <= 0) {
+        std::cerr << "have no application parameters" << std::endl;
         return;
+    }
     std::string params((char *) (interest.getApplicationParameters().value()),
                        interest.getApplicationParameters().value_size());
+    std::cout << "params: " << params << std::endl;
     JsonCppUtil jsonCppUtil(params);
     Data data(interest.getName());
     Json::Value root;
@@ -57,6 +61,7 @@ void Server::onInterest(const InterestFilter &filter, const Interest &interest) 
         case BaseRequestMessage::REMOVE_CERTIFICATE:                    // 撤销证书
             removeCertificateRequestMessage.parse(params);
             resCode = ndnCertificationUtil.uninstallCert(removeCertificateRequestMessage.getCertStr());
+            std::cout << removeCertificateRequestMessage.getCertStr() << std::endl;
             if (resCode >= 0) {
                 resCode = 0;
             } else {
@@ -90,6 +95,13 @@ void Server::onInterest(const InterestFilter &filter, const Interest &interest) 
             std::cerr << "未能处理的请求：" << endl << params << endl;
             break;
     }
+
+    std::cout << "response: " << std::endl << root.toStyledString() << std::endl;
+    std::string result = root.toStyledString();
+    data.setContent((uint8_t *) result.c_str(), result.size());
+    data.setFreshnessPeriod(1_ms);
+    keyChain.sign(data);
+    face.put(data);
 }
 
 void Server::onRegisterFailed(const Name &prefix, const std::string &reason) {

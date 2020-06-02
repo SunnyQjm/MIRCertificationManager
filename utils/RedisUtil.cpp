@@ -87,6 +87,7 @@ int RedisUtil::exist(const std::string &key) {
  * @return 如果key对应的条目存在且设置生存期成功，则返回一个大于0的值；否则返回0
  */
 int RedisUtil::setLifeTime(const std::string &key, long lifetime) {
+    std::cout << "setLifeTime: <" << key << ", " << lifetime << ">" << std::endl;
     this->_reply = static_cast<redisReply *>(redisCommand(this->_connect, "PEXPIRE %s %ld", key.c_str(), lifetime));
     return static_cast<int>(this->_reply->integer);
 }

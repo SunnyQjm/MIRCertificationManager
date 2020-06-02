@@ -56,8 +56,11 @@ int NDNCertificationUtil::installCert(const std::string &certStr, long lifetime,
     if (!forceUpdate && redisUtil.exist(cert.getName().toUri()) > 0) {
         return -2;
     }
-    redisUtil.setLifeTime(cert.getName().toUri(), lifetime);
-    return redisUtil.set(cert.getName().toUri(), certStr) == 0;
+    std::cout << cert.getName() << std::endl;
+    int result = redisUtil.set(cert.getName().toUri(), certStr) ? 0 : -3;
+    std::cout << "setLifetime: " << lifetime << std::endl << "result: "
+              << redisUtil.setLifeTime(cert.getName().toUri(), lifetime) << std::endl;
+    return result;
 }
 
 /**

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.5)
 project(MIRCertificationManager)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -23,3 +23,9 @@ add_executable(uninstallCertificate uninstallCertificate.cpp
         utils/RedisUtil.cpp
         utils/NDNCertificationUtil.cpp)
 target_link_libraries(uninstallCertificate ndn-cxx boost_system hiredis)
+
+add_executable(testRequest testRequest.cpp
+        utils/FileUtils.cpp
+        )
+
+target_link_libraries(testRequest ndn-cxx boost_system)

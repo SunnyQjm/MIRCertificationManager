@@ -32,9 +32,6 @@ public:
         reader.parse(jsonStr, root);
 
         this->code = code;
-        int code = root["code"].asInt();
-        if (code != 1)
-            return this;
         removeCertificateRequestData.certStr = root["data"]["certStr"].asString();
         return this;
     }
