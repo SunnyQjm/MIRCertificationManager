@@ -45,7 +45,7 @@ bool NDNCertificationUtil::connect(const std::string &host, int port) {
  *         -1 -> 证书无效
  *         -2 -> 已经存在
  */
-int NDNCertificationUtil::installCert(const std::string &certStr, bool forceUpdate) {
+int NDNCertificationUtil::installCert(const std::string &certStr, long lifetime, bool forceUpdate) {
     // 首先验证证书是否有效
     if (!isValidBlock(certStr))
         return -1;
@@ -56,6 +56,7 @@ int NDNCertificationUtil::installCert(const std::string &certStr, bool forceUpda
     if (!forceUpdate && redisUtil.exist(cert.getName().toUri()) > 0) {
         return -2;
     }
+    redisUtil.setLifeTime(cert.getName().toUri(), lifetime);
     return redisUtil.set(cert.getName().toUri(), certStr) == 0;
 }
 
@@ -144,4 +145,22 @@ bool NDNCertificationUtil::verifyData(const ndn::Data &data) {
 
     auto result = ndn::security::verifySignature(data, cert);
     return result;
+}
+
+/**
+ * 获取证书剩余存活时间，单位为毫秒；
+ *
+ *
+ * @param key
+ * @return
+ *      -2 => 返回-2表示key对应的条目不存在（可能是本来就没有这个条目，或者本来有一个条目，但是因为设置了存活期，其存活期已到，被移除了）
+ *      -1 => 返回-1表示key对应的条目存在，但是没有设置过存活期，是持久保存的
+ *    >= 0 => 返回大于等于0的值表示key对应的条目存在，且其剩余的存活时间为返回的值，单位为毫秒
+ */
+long NDNCertificationUtil::getCertLifetime(const std::string &key) {
+    return redisUtil.getRemainingTime(key);
+}
+
+bool NDNCertificationUtil::exists(const std::string &key) {
+    return redisUtil.exist(key) > 0;
 }

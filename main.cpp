@@ -1,5 +1,6 @@
 #include <iostream>
 #include "utils/RedisUtil.h"
+#include "Server.h"
 
 /**
  *
@@ -12,14 +13,31 @@
 4. 把退出登录的功能也做一做。即从redis中删除证书。加载证书和删除证书的代码不写到NFD中，应单独开发。
  * @return
  */
+
+using namespace std;
+
 int main() {
-    RedisUtil redisUtil;
-    redisUtil.connect("127.0.0.1", 6379);
-    std::cout << redisUtil.set("test", "1234") << std::endl;
-    auto result = redisUtil.get("test1");
-    std::cout << result << std::endl;
-    std::cout << "exists: " << redisUtil.exist("test") << std::endl;
-    redisUtil.del("test");
-    std::cout << "exists: " << redisUtil.exist("test") << std::endl;
-    return 0;
+
+    Server server;
+    server.run();
+
+//    AddOrUpdateCertificateRequestMessage addOrUpdateCertificateRequestMessage;
+//    addOrUpdateCertificateRequestMessage.parse("{\n"
+//                                               "\"code\": 1,\n"
+//                                               "\"data\": {\n"
+//                                               "\"certStr\": \"证书的base64编码字符串\",\n"
+//                                               "\"lifetime\": 1000,\n"
+//                                               "\"forceUpdate\": false\n"
+//                                               "}\n"
+//                                               "}");
+//    cout << addOrUpdateCertificateRequestMessage.getCertStr() << endl;
+//    RedisUtil redisUtil;
+//    redisUtil.connect("127.0.0.1", 6379);
+//    std::cout << redisUtil.set("test", "1234") << std::endl;
+//    auto result = redisUtil.get("test1");
+//    std::cout << result << std::endl;
+//    std::cout << "exists: " << redisUtil.exist("test") << std::endl;
+//    redisUtil.del("test");
+//    std::cout << "exists: " << redisUtil.exist("test") << std::endl;
+//    return 0;
 }
