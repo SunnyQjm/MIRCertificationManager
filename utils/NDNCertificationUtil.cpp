@@ -54,7 +54,7 @@ int NDNCertificationUtil::installCert(const std::string &certStr, long lifetime,
     std::stringstream ss(certStr);
     ndn::security::v2::Certificate cert =
             *(ndn::io::load<ndn::security::v2::Certificate>(ss));
-    if (!forceUpdate && redisUtil.exist(cert.getName().toUri()) > 0) {
+    if (!forceUpdate && redisUtil.exist(cert.getKeyName().toUri()) > 0) {
         return -2;
     }
     std::cout << cert.getKeyName() << " => " << certStr << std::endl;
