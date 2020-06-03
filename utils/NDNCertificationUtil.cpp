@@ -57,11 +57,11 @@ int NDNCertificationUtil::installCert(const std::string &certStr, long lifetime,
     if (!forceUpdate && redisUtil.exist(cert.getName().toUri()) > 0) {
         return -2;
     }
-    std::cout << cert.getName() << " => " << certStr << std::endl;
-    int result = redisUtil.set(cert.getName().toUri(), certStr) ? 0 : -3;
+    std::cout << cert.getKeyName() << " => " << certStr << std::endl;
+    int result = redisUtil.set(cert.getKeyName().toUri(), certStr) ? 0 : -3;
     if (lifetime > 0) {
         std::cout << "setLifetime: " << lifetime << std::endl << "result: "
-                  << redisUtil.setLifeTime(cert.getName().toUri(), lifetime) << std::endl;
+                  << redisUtil.setLifeTime(cert.getKeyName().toUri(), lifetime) << std::endl;
     }
     return result;
 }
@@ -84,7 +84,7 @@ int NDNCertificationUtil::uninstallCert(const std::string &certStr) {
     std::stringstream ss(certStr);
     ndn::security::v2::Certificate cert =
             *(ndn::io::load<ndn::security::v2::Certificate>(ss));
-    return redisUtil.del(cert.getName().toUri());
+    return redisUtil.del(cert.getKeyName().toUri());
 }
 
 /**
