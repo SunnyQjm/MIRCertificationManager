@@ -73,6 +73,7 @@ void Server::onInterest(const InterestFilter &filter, const Interest &interest) 
         case BaseRequestMessage::GET_CERTIFICATE_LIFETIME:              // 获取证书的生存期
             getLifetimeRequestMessage.parse(params);
             longResult = ndnCertificationUtil.getCertLifetime(getLifetimeRequestMessage.getCertStr());
+            std::cout << "longResult: " << longResult << std::endl;
             root["data"] = (long long int) longResult;
             if (longResult >= 0) {
                 resCode = 0;

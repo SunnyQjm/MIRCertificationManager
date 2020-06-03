@@ -3,6 +3,7 @@
 //
 
 #include "NDNCertificationUtil.h"
+#include <iostream>
 
 /**
  * 验证一个包含证书的字符串是不是一个合法的NDN证书
@@ -154,16 +155,30 @@ bool NDNCertificationUtil::verifyData(const ndn::Data &data) {
  * 获取证书剩余存活时间，单位为毫秒；
  *
  *
- * @param key
+ * @param certStr
  * @return
  *      -2 => 返回-2表示key对应的条目不存在（可能是本来就没有这个条目，或者本来有一个条目，但是因为设置了存活期，其存活期已到，被移除了）
  *      -1 => 返回-1表示key对应的条目存在，但是没有设置过存活期，是持久保存的
  *    >= 0 => 返回大于等于0的值表示key对应的条目存在，且其剩余的存活时间为返回的值，单位为毫秒
  */
-long NDNCertificationUtil::getCertLifetime(const std::string &key) {
-    return redisUtil.getRemainingTime(key);
+long NDNCertificationUtil::getCertLifetime(const std::string &certStr) {
+    // 首先验证证书是否有效
+    if (!isValidBlock(certStr))
+        return -1;
+    // 接着构造证书
+    std::stringstream ss(certStr);
+    ndn::security::v2::Certificate cert =
+            *(ndn::io::load<ndn::security::v2::Certificate>(ss));
+    return redisUtil.getRemainingTime(cert.getName().toUri());
 }
 
-bool NDNCertificationUtil::exists(const std::string &key) {
-    return redisUtil.exist(key) > 0;
+bool NDNCertificationUtil::exists(const std::string &certStr) {
+    // 首先验证证书是否有效
+    if (!isValidBlock(certStr))
+        return -1;
+    // 接着构造证书
+    std::stringstream ss(certStr);
+    ndn::security::v2::Certificate cert =
+            *(ndn::io::load<ndn::security::v2::Certificate>(ss));
+    return redisUtil.exist(cert.getName().toUri()) > 0;
 }

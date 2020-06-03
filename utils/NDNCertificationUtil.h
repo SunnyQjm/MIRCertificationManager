@@ -72,20 +72,20 @@ public:
      * 获取证书剩余存活时间，单位为毫秒；
      *
      *
-     * @param key
+     * @param certStr
      * @return
      *      -2 => 返回-2表示key对应的条目不存在（可能是本来就没有这个条目，或者本来有一个条目，但是因为设置了存活期，其存活期已到，被移除了）
      *      -1 => 返回-1表示key对应的条目存在，但是没有设置过存活期，是持久保存的
      *    >= 0 => 返回大于等于0的值表示key对应的条目存在，且其剩余的存活时间为返回的值，单位为毫秒
      */
-    long getCertLifetime(const std::string &key);
+    long getCertLifetime(const std::string &certStr);
 
     /**
      * 判断某个证书是否存在
-     * @param key
+     * @param certStr
      * @return 如果存在则返回大于0的值，典型值为1
      */
-    bool exists(const std::string &key);
+    bool exists(const std::string &certStr);
 
     /**
      * 验证兴趣包签名是否有效
