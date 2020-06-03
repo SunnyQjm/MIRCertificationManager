@@ -10,6 +10,8 @@
 #include "message/RemoveCertificateRequestMessage.h"
 #include "message/GetLifetimeRequestMessage.h"
 #include "message/ExistsCertificateRequestMessage.h"
+#include <ndn-cxx/lp/cache-policy.hpp>
+#include <ndn-cxx/lp/tags.hpp>
 
 
 Server::Server(std::string prefix) :
@@ -101,6 +103,11 @@ void Server::onInterest(const InterestFilter &filter, const Interest &interest) 
     std::string result = root.toStyledString();
     data.setContent((uint8_t *) result.c_str(), result.size());
     data.setFreshnessPeriod(1_ms);
+
+    // 设置data包不缓存
+    lp::CachePolicy cachePolicy;
+    cachePolicy.setPolicy(lp::CachePolicyType::NO_CACHE);
+    data.setTag(make_shared<lp::CachePolicyTag>(cachePolicy));
     keyChain.sign(data);
     face.put(data);
 }

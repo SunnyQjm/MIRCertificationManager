@@ -8,8 +8,8 @@
 #include <ndn-cxx/data.hpp>
 #include "utils/FileUtils.h"
 #include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_io.hpp>
-#include <boost/uuid/uuid_generators.hpp>
+//#include <boost/uuid/uuid_io.hpp>
+//#include <boost/uuid/uuid_generators.hpp>
 
 using namespace std;
 using namespace ndn;
@@ -22,9 +22,9 @@ int main(int argc, char **argv) {
     Interest::setDefaultCanBePrefix(true);
     string jsonStr = FileUtils::readFile2String(argv[2]);;
     ndn::Face face;
-    boost::uuids::uuid a_uuid = boost::uuids::random_generator()();
-    string uuid_string = boost::uuids::to_string(a_uuid);
-    ndn::Interest interest("/localmanager/mircertification/" + uuid_string);
+//    boost::uuids::uuid a_uuid = boost::uuids::random_generator()();
+//    string uuid_string = boost::uuids::to_string(a_uuid);
+    ndn::Interest interest("/localmanager/mircertification");
     interest.setMustBeFresh(true);
     interest.setApplicationParameters((uint8_t *) jsonStr.c_str(), jsonStr.size());
     face.expressInterest(interest, [=](const Interest &interest1, const Data &data) {
