@@ -11,6 +11,13 @@
         sudo apt install redis-server
         ```
     - libhiredis-dev => C语言实现的redis客户端API的连接库（代码中使用该库来连接redis本机的redis服务器）
+        ```bash
+        sudo apt install libhiredis-dev
+        ```
+    - libjsoncpp-dev => 用于解析json
+        ```bash
+        sudo apt install libjsoncpp-dev
+        ```
 
 - **编译**
     ```bash
@@ -30,6 +37,21 @@
 - **用命令行从redis卸载证书**
     ```bash
     ./uninstallCertificate -f <证书文件路径>
+    ```
+
+- **测试接口**
+    ```bash
+    # 首先启动server
+    ./MIRCertificationManager
+    
+    # 然后再另一个窗口测试客户端
+    ./testRequest -f testjson/testAddOrUpdateCertificateRequet.json
+    
+    ./testRequest -f testjson/testExistsCertificate.json
+  
+    ./testRequest -f testjson/testGetCertificateLifetime.json
+  
+    ./testRequest -f testjson/testRemoveCertificateRequest.json
     ```
 
 ## 通信接口
