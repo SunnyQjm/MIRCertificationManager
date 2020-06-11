@@ -64,23 +64,30 @@
   ```json
   // 请求
   {
-      "code": 1,
-      "data": {
+      "Code": 1,
+      "Data": {
           // 字符串类型
-          "certStr": "证书的base64编码字符串",		
+          "Prefix": "用户前缀",
+  
+          // 字符串类型
+          "CertStr": "证书字符串",		
           
           // long型整数，表示整数有效期，单位为ms，如果期望证书不过期，一直可用，可以传递-1
-          "lifetime": 1000,
+          "Lifetime": 1000,
           
           // 是否强制更新 => 指定强制更新，则证书已存在的情况下，会覆盖同名的旧的证书记录
-          "forceUpdate": false
-      }
+          "ForceUpdate": false
+      },
+      // 字符串类型
+      "Timestamp"	: "xxx" ,
   }
   
   // 回复
   {
-      "code": 0,			// 0 => 安装成功， -1 => 证书格式错误， -2 => 存在同名证书，且未覆盖
-      "errMsg": "",		// 如果有错误展示错误描述，没有错误则为空字符串
+      "Prefix": "用户前缀",
+      "Code": 1,
+      "StatusCode": 0,			// 0 => 安装成功， -1 => 证书格式错误， -2 => 存在同名证书，且未覆盖
+      "ErrMsg": ""		// 如果有错误展示错误描述，没有错误则为空字符串
   }
   ```
 
@@ -91,17 +98,24 @@
   ```json
   // 请求
   {
-      "code": 2,
-      "data": {
+      "Code": 2,
+      "Data": {
           // 字符串类型
-          "certStr": "证书的base64编码字符串"
-      }
+          "Prefix": "用户前缀",
+  
+          // 字符串类型
+          "CertStr": "证书字符串"
+      },
+      // 字符串类型
+      "Timestamp"	: "xxx" ,
   }
   
   // 回复
   {
-      "code": 0,			// 0 => 撤销成功， -1 => 证书格式错误, -2 => 没有对应的条目
-      "errMsg": ""		// 如果有错误展示错误描述，没有错误则为空字符串
+      "Prefix": "用户前缀",
+      "Code": 2,
+      "StatusCode": 0,			// 0 => 撤销成功， -1 => 证书格式错误, -2 => 没有对应的条目
+      "ErrMsg": ""		// 如果有错误展示错误描述，没有错误则为空字符串
   }
   ```
 
@@ -112,18 +126,24 @@
   ```json
   // 请求
   {
-      "code": 3,
-      "data": {
+      "Code": 3,
+      "Data": {
           // 字符串类型
-          "certStr": "证书的base64编码字符串"
-      }
+          "Prefix": "用户前缀",
+  
+          // 字符串类型
+          "CertStr": "证书字符串"
+      },
+      // 字符串类型
+      "Timestamp"	: "xxx" ,
   }
   
   // 回复
   {
-      "code": 0,			// 0 => 成功，-2 => 没有对应的条目
-      "errMsg": "",		// 如果有错误展示错误描述，没有错误则为空字符串
-      "data": 5000		// >=0的值 => 表示当前剩余存活期， -1 => 表示没有设置存活期，持久保存
+      "Code": 3,
+      "StatusCode": 0,			// 0 => 成功，-2 => 没有对应的条目
+      "ErrMsg": "",		// 如果有错误展示错误描述，没有错误则为空字符串
+      "Data": 5000		// >=0的值 => 表示当前剩余存活期， -1 => 表示没有设置存活期，持久保存
   }
   ```
 
@@ -134,18 +154,65 @@
   ```json
   // 请求
   {
-      "code": 4,
-      "data": {
+      "Code": 4,
+      "Data": {
           // 字符串类型
-          "certStr": "证书的base64编码字符串"
-      }
+          "Prefix": "用户前缀",
+  
+          // 字符串类型
+          "CertStr": "证书字符串"
+      },
+      // 字符串类型
+      "Timestamp"	: "xxx" ,
   }
   
   // 回复
   {
-      "code": 0,			// 0 => 存在，-1 => 没有对应的条目
-      "errMsg": ""		// 如果有错误展示错误描述，没有错误则为空字符串
+      "Code": 4,
+      "StatusCode": 0,			// 0 => 存在，-1 => 没有对应的条目
+      "ErrMsg": ""		// 如果有错误展示错误描述，没有错误则为空字符串
   }
   ```
-
-  
+## RSA加密
+  RSA密钥长度: 2048位  
+  RSA padding标准: PKCS1Padding  
+  Base64标准: RawURLEncoding  
+- **公钥pem创建**
+  ```go
+    //保存公钥
+	//获取公钥的数据
+	publicKey:=privateKey.PublicKey
+	//X509对公钥编码
+	X509PublicKey,err:=x509.MarshalPKIXPublicKey(&publicKey)
+	if err!=nil{
+		panic(err)
+	}
+	//pem格式编码
+	//创建用于保存公钥的文件
+	publicFile, err := os.Create("rsa_public.pem")
+	if err!=nil{
+		panic(err)
+	}
+	defer publicFile.Close()
+	//创建一个pem.Block结构体对象
+	publicBlock:= pem.Block{Type: "RSA Public Key",Bytes:X509PublicKey}
+	//保存到文件
+	pem.Encode(publicFile,&publicBlock)
+	```
+- **公钥加密与base64编码**
+	```go
+	// 公钥加密
+	func (r *KeyManager) RSAPublicEncrypt(data string) (string, error) {
+		partLen := r.rsa_publicKey.N.BitLen() / 8 - 11
+		chunks := split([]byte(data), partLen)
+		buffer := bytes.NewBufferString("")
+		for _, chunk := range chunks {
+			bytes, err := rsa.EncryptPKCS1v15(rand.Reader, r.rsa_publicKey, chunk)
+			if err != nil {
+				return "", err
+			}
+			buffer.Write(bytes)
+		}
+		return base64.RawURLEncoding.EncodeToString(buffer.Bytes()), nil
+	}
+	```
