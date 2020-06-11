@@ -7,9 +7,10 @@
 
 #include "BaseRequestMessage.h"
 
-class RemoveCertificateRequestMessage : BaseRequestMessage {
+class RemoveCertificateRequestMessage : public BaseRequestMessage {
 public:
     struct RemoveCertificateRequestData {
+        std::string prefix = "";        //  用户前缀
         std::string certStr = "";
     };
 
@@ -31,8 +32,10 @@ public:
         Json::Value root;
         reader.parse(jsonStr, root);
 
-        this->code = code;
-        removeCertificateRequestData.certStr = root["data"]["certStr"].asString();
+        this->code = root["Code"].asInt();
+        this->timestamp = root["Timestamp"].asString();
+        removeCertificateRequestData.prefix = root["Data"]["Prefix"].asString();
+        removeCertificateRequestData.certStr = root["Data"]["CertStr"].asString();
         return this;
     }
 
@@ -40,6 +43,9 @@ public:
         return removeCertificateRequestData.certStr;
     }
 
+    std::string getPrefix() const {
+        return removeCertificateRequestData.prefix;
+    }
 private:
     RemoveCertificateRequestData removeCertificateRequestData;
 };

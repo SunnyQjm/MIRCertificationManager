@@ -52,13 +52,15 @@ void Server::onInterest(const InterestFilter &filter, const Interest &interest) 
     RemoveCertificateRequestMessage removeCertificateRequestMessage;
     GetLifetimeRequestMessage getLifetimeRequestMessage;
     ExistsCertificateRequestMessage existsCertificateRequestMessage;
-    switch (jsonCppUtil.getInt("code")) {
+    switch (jsonCppUtil.getInt("Code")) {
         case BaseRequestMessage::ADD_OR_UPDATE_CERTIFICATE:             // 下发或更新证书
             addOrUpdateCertificateRequestMessage.parse(params);
-            root["code"] = ndnCertificationUtil.installCert(addOrUpdateCertificateRequestMessage.getCertStr(),
-                                                            addOrUpdateCertificateRequestMessage.getLifetime(),
-                                                            addOrUpdateCertificateRequestMessage.isForceUpdate());
-            root["errMsg"] = addOrUpdateCertificateRequestMessage.getErrorMessage(root["code"].asInt());
+            root["Prefix"] = addOrUpdateCertificateRequestMessage.getPrefix();
+            root["Code"] = addOrUpdateCertificateRequestMessage.getCode();
+            root["StatusCode"] = ndnCertificationUtil.installCert(addOrUpdateCertificateRequestMessage.getCertStr(),
+                                                                  addOrUpdateCertificateRequestMessage.getLifetime(),
+                                                                  addOrUpdateCertificateRequestMessage.isForceUpdate());
+            root["ErrMsg"] = addOrUpdateCertificateRequestMessage.getErrorMessage(root["StatusCode"].asInt());
             break;
         case BaseRequestMessage::REMOVE_CERTIFICATE:                    // 撤销证书
             removeCertificateRequestMessage.parse(params);
@@ -69,30 +71,35 @@ void Server::onInterest(const InterestFilter &filter, const Interest &interest) 
             } else {
                 resCode = resCode;
             }
-            root["code"] = resCode;
-            root["errMsg"] = removeCertificateRequestMessage.getErrorMessage(resCode);
+            root["Prefix"] = removeCertificateRequestMessage.getPrefix();
+            root["Code"] = removeCertificateRequestMessage.getCode();
+            root["StatusCode"] = resCode;
+            root["ErrMsg"] = removeCertificateRequestMessage.getErrorMessage(resCode);
             break;
         case BaseRequestMessage::GET_CERTIFICATE_LIFETIME:              // 获取证书的生存期
             getLifetimeRequestMessage.parse(params);
             longResult = ndnCertificationUtil.getCertLifetime(getLifetimeRequestMessage.getCertStr());
             std::cout << "longResult: " << longResult << std::endl;
-            root["data"] = (long long int) longResult;
+            root["Data"] = (long long int) longResult;
             if (longResult >= 0) {
                 resCode = 0;
             } else {
                 resCode = (int) longResult;
             }
-            root["code"] = resCode;
-            root["errMsg"] = getLifetimeRequestMessage.getErrorMessage(resCode);
+            root["Prefix"] = getLifetimeRequestMessage.getPrefix();
+            root["Code"] = getLifetimeRequestMessage.getCode();
+            root["StatusCode"] = resCode;
+            root["ErrMsg"] = getLifetimeRequestMessage.getErrorMessage(resCode);
             break;
         case BaseRequestMessage::EXISTS_CERTIFICATE:                    // 证书是否存在
             existsCertificateRequestMessage.parse(params);
             if (ndnCertificationUtil.exists(existsCertificateRequestMessage.getCertStr())) {
-                root["code"] = 0;
+                root["StatusCode"] = 0;
             } else {
-                root["code"] = -1;
+                root["StatusCode"] = -1;
             }
-            root["errMsg"] = existsCertificateRequestMessage.getErrorMessage(root["code"].asInt());
+            root["Code"] = existsCertificateRequestMessage.getCode();
+            root["ErrMsg"] = existsCertificateRequestMessage.getErrorMessage(root["StatusCode"].asInt());
             break;
         default:
             std::cerr << "未能处理的请求：" << endl << params << endl;

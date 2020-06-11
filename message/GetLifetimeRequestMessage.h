@@ -7,9 +7,10 @@
 
 #include "BaseRequestMessage.h"
 
-class GetLifetimeRequestMessage : BaseRequestMessage {
+class GetLifetimeRequestMessage : public BaseRequestMessage {
 public:
     struct GetLifetimeRequestData {
+        std::string prefix = "";        //  用户前缀
         std::string certStr = "";
     };
 
@@ -32,13 +33,19 @@ public:
         Json::Value root;
         reader.parse(jsonStr, root);
 
-        this->code = code;
-        getLifetimeRequestData.certStr = root["data"]["certStr"].asString();
+        this->code = root["Code"].asInt();
+        this->timestamp = root["Timestamp"].asString();
+        getLifetimeRequestData.prefix = root["Data"]["Prefix"].asString();
+        getLifetimeRequestData.certStr = root["Data"]["CertStr"].asString();
         return this;
     }
 
     std::string getCertStr() const {
         return getLifetimeRequestData.certStr;
+    }
+
+    std::string getPrefix() const {
+        return getLifetimeRequestData.prefix;
     }
 
 private:

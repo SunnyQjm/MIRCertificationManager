@@ -11,6 +11,7 @@
 class AddOrUpdateCertificateRequestMessage : public BaseRequestMessage {
 public:
     struct AddOrUpdateCertificateRequestData {
+        std::string prefix = "";        //  用户前缀
         std::string certStr = "";
         long lifetime = -1;
         bool forceUpdate = false;
@@ -34,10 +35,12 @@ public:
         Json::Value root;
         reader.parse(jsonStr, root);
 
-        this->code = code;
-        addOrUpdateCertificateRequestData.certStr = root["data"]["certStr"].asString();
-        addOrUpdateCertificateRequestData.lifetime = root["data"]["lifetime"].asUInt64();
-        addOrUpdateCertificateRequestData.forceUpdate = root["data"]["forceUpdate"].asBool();
+        this->code = root["Code"].asInt();
+        this->timestamp = root["Timestamp"].asString();
+        addOrUpdateCertificateRequestData.prefix = root["Data"]["Prefix"].asString();
+        addOrUpdateCertificateRequestData.certStr = root["Data"]["CertStr"].asString();
+        addOrUpdateCertificateRequestData.lifetime = root["Data"]["Lifetime"].asUInt64();
+        addOrUpdateCertificateRequestData.forceUpdate = root["Data"]["ForceUpdate"].asBool();
         return this;
     }
 
@@ -52,6 +55,10 @@ public:
 
     bool isForceUpdate() const {
         return addOrUpdateCertificateRequestData.forceUpdate;
+    }
+
+    std::string getPrefix() const {
+        return addOrUpdateCertificateRequestData.prefix;
     }
 
 private:

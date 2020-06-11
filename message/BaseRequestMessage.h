@@ -21,6 +21,10 @@ public:
         return code;
     }
 
+    std::string getTimestamp() const {
+        return timestamp;
+    }
+
     virtual BaseRequestMessage *parse(const std::string &jsonStr) {};
 
     virtual std::string getErrorMessage(int responseCode) {};
@@ -57,6 +61,7 @@ public:
 
 protected:
     int code{0};
+    std::string timestamp = "";
 };
 
 const int BaseRequestMessage::ADD_OR_UPDATE_CERTIFICATE = 1;

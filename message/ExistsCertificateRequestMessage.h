@@ -7,9 +7,10 @@
 
 #include "BaseRequestMessage.h"
 
-class ExistsCertificateRequestMessage : BaseRequestMessage {
+class ExistsCertificateRequestMessage : public BaseRequestMessage {
 public:
     struct ExistsCertificateRequestData {
+        std::string prefix = "";        //  用户前缀
         std::string certStr = "";
     };
 
@@ -29,13 +30,19 @@ public:
         Json::Value root;
         reader.parse(jsonStr, root);
 
-        this->code = code;
-        existsCertificateRequestData.certStr = root["data"]["certStr"].asString();
+        this->code = root["Code"].asInt();
+        this->timestamp = root["Timestamp"].asString();
+        existsCertificateRequestData.prefix = root["Data"]["Prefix"].asString();
+        existsCertificateRequestData.certStr = root["Data"]["CertStr"].asString();
         return this;
     }
 
     std::string getCertStr() const {
         return existsCertificateRequestData.certStr;
+    }
+
+    std::string getPrefix() const {
+        return existsCertificateRequestData.prefix;
     }
 
 private:
