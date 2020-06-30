@@ -39,7 +39,7 @@ public:
         this->timestamp = root["Timestamp"].asString();
         addOrUpdateCertificateRequestData.prefix = root["Data"]["Prefix"].asString();
         addOrUpdateCertificateRequestData.certStr = root["Data"]["CertStr"].asString();
-        addOrUpdateCertificateRequestData.lifetime = root["Data"]["Lifetime"].asUInt64();
+        addOrUpdateCertificateRequestData.lifetime = root["Data"]["Lifetime"].asInt64();
         addOrUpdateCertificateRequestData.forceUpdate = root["Data"]["ForceUpdate"].asBool();
         return this;
     }
