@@ -8,9 +8,10 @@ add_executable(MIRCertificationManager main.cpp
         utils/RedisUtil.cpp
         utils/NDNCertificationUtil.cpp
         utils/JsonCppUtil.cpp
+        utils/RingBuffer.cpp
         Server.cpp
-        )
-target_link_libraries(MIRCertificationManager ndn-cxx boost_system hiredis jsoncpp)
+        BlockChainLogger.cpp BlockChainLogger.h)
+target_link_libraries(MIRCertificationManager ndn-cxx boost_system hiredis jsoncpp boost_thread pthread rt)
 
 add_executable(installCertificate installCertificate.cpp
         utils/FileUtils.cpp
@@ -29,3 +30,9 @@ add_executable(testRequest testRequest.cpp
         )
 
 target_link_libraries(testRequest ndn-cxx boost_system)
+
+add_executable(testBlockchainLog testBlockchainLog.cpp
+        utils/RingBuffer.cpp
+        )
+
+target_link_libraries(testBlockchainLog ndn-cxx boost_system hiredis jsoncpp boost_thread pthread rt)

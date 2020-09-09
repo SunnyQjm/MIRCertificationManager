@@ -1,6 +1,8 @@
 #include <iostream>
+#include <thread>
 #include "utils/RedisUtil.h"
 #include "Server.h"
+#include "BlockChainLogger.h"
 
 /**
  *
@@ -18,8 +20,13 @@ using namespace std;
 
 int main() {
 
-    Server server;
-    server.run();
+  Server server;
+  server.run();
+  std::thread t([]() {
+    BlockChainLogger blockChainLogger;
+    blockChainLogger.run();
+  });
+
 
 //    AddOrUpdateCertificateRequestMessage addOrUpdateCertificateRequestMessage;
 //    addOrUpdateCertificateRequestMessage.parse("{\n"
