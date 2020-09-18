@@ -26,7 +26,7 @@ void BlockChainLogger::run() {
   int offset = 0;
 
   while (true) {
-    if (expectedSize <= 0) {       // 读取一个整型，表示后面跟着的json串的大小
+    if (expectedSize <= 0) {       // 读取一个整型，表示后面跟着的json串
       size = ringBuffer.read(buffer, 4);
       if (size <= 0) {    // 没有数据
 //        std::cout << "wait for data" << std::endl;

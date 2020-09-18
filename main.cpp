@@ -1,9 +1,7 @@
-#include <iostream>
 #include <thread>
-#include "utils/RedisUtil.h"
 #include "Server.h"
 #include "BlockChainLogger.h"
-
+#include <ndn-cxx/util/NTRUSignUtil.hpp>
 /**
  *
 1. 接收区块链下发的登录信息，加载相应用户的证书到redis数据库中。下发登录信息应包含登录超时时间。
@@ -20,13 +18,14 @@ using namespace std;
 
 int main() {
 
+  ndn::security::ntru::NTRUSignUtil::init();
   Server server;
-  server.run();
   std::thread t([]() {
     BlockChainLogger blockChainLogger;
     blockChainLogger.run();
   });
-
+  server.run();
+  ndn::security::ntru::NTRUSignUtil::clean();
 
 //    AddOrUpdateCertificateRequestMessage addOrUpdateCertificateRequestMessage;
 //    addOrUpdateCertificateRequestMessage.parse("{\n"
