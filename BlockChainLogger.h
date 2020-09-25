@@ -24,7 +24,7 @@ public:
   explicit
   BlockChainLogger(std::string shareMemoryName = "MIN-MIR-WARNING-LOG-TO-BLOCKCHAIN",
                    std::string host = "localhost", int port = 6363,
-                   std::string prefix = "/mis/log");
+                   std::string prefix = "/mis1");
 
   /**
    * 运行日志转发服务

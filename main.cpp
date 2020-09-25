@@ -18,14 +18,12 @@ using namespace std;
 
 int main() {
 
-  ndn::security::ntru::NTRUSignUtil::init();
   Server server;
   std::thread t([]() {
     BlockChainLogger blockChainLogger;
     blockChainLogger.run();
   });
   server.run();
-  ndn::security::ntru::NTRUSignUtil::clean();
 
 //    AddOrUpdateCertificateRequestMessage addOrUpdateCertificateRequestMessage;
 //    addOrUpdateCertificateRequestMessage.parse("{\n"
