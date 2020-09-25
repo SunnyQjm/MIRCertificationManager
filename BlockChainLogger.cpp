@@ -4,6 +4,8 @@
 #include <utility>
 #include "BlockChainLogger.h"
 #include "utils/RingBuffer.h"
+#include <ndn-cxx/lp/cache-policy.hpp>
+#include <ndn-cxx/lp/tags.hpp>
 
 
 BlockChainLogger::BlockChainLogger(std::string shareMemoryName,
@@ -46,6 +48,10 @@ void BlockChainLogger::run() {
       // 通过MIN的方式，将日志信息发给区块链
       Interest interest((Name(prefix)));
       interest.setMustBeFresh(true);
+      Data data;
+      ndn::lp::CachePolicy cachePolicy;
+      cachePolicy.setPolicy(ndn::lp::CachePolicyType::NO_CACHE);
+      data.setTag(make_shared<ndn::lp::CachePolicyTag>(cachePolicy));
       interest.setApplicationParameters((const uint8_t *) buffer, offset);
       keyChain.sign(interest);
       face.expressInterest(interest, [](const Interest &interest1, const Data &data) {
