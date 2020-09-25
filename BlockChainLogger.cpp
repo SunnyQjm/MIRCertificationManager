@@ -47,6 +47,7 @@ void BlockChainLogger::run() {
       Interest interest((Name(prefix)));
       interest.setMustBeFresh(true);
       interest.setApplicationParameters((const uint8_t *) buffer, offset);
+      keyChain.sign(interest);
       face.expressInterest(interest, [](const Interest &interest1, const Data &data) {
         // onData
         std::cout << "onData" << std::endl;
