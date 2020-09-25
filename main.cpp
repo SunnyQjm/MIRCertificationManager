@@ -1,7 +1,6 @@
 #include <thread>
 #include "Server.h"
 #include "BlockChainLogger.h"
-#include <ndn-cxx/util/NTRUSignUtil.hpp>
 /**
  *
 1. 接收区块链下发的登录信息，加载相应用户的证书到redis数据库中。下发登录信息应包含登录超时时间。
