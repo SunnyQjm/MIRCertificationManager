@@ -84,6 +84,7 @@ int NDNCertificationUtil::uninstallCert(const std::string &certStr) {
     std::stringstream ss(certStr);
     ndn::security::v2::Certificate cert =
             *(ndn::io::load<ndn::security::v2::Certificate>(ss));
+    std::cout << "try to del " << cert.getKeyName().toUri() << std::endl;
     return redisUtil.del(cert.getKeyName().toUri());
 }
 
