@@ -32,7 +32,7 @@ bool NDNCertificationUtil::isValidBlock(const std::string &certStr) {
  * @return
  */
 bool NDNCertificationUtil::connect(const std::string &host, int port) {
-    return redisUtil.connect(host, port);
+    return redisUtil.connect(host, port, "pkusz26035354");
 }
 
 /**

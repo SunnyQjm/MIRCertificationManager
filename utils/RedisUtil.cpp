@@ -19,11 +19,16 @@ RedisUtil::~RedisUtil() {
  * @param port  端口
  * @return
  */
-bool RedisUtil::connect(const std::string &host, int port) {
+bool RedisUtil::connect(const std::string &host, int port, const std::string &passwd) {
     // 连接到指定的redis服务器
     this->_connect = redisConnect(host.c_str(), port);
     if (this->_connect == nullptr || this->_connect->err) {
         std::cerr << "connect error: " << this->_connect->errstr << std::endl;
+        return false;
+    }
+    auto reply = (redisReply *)redisCommand(this->_connect, "AUTH %s", passwd.c_str());
+    if (reply->type == REDIS_REPLY_ERROR) {
+        std::cerr << "Redis认证失败" << std::endl;
         return false;
     }
     return true;

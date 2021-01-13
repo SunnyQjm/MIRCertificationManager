@@ -21,7 +21,7 @@ public:
      * @param port  端口
      * @return
      */
-    bool connect(const std::string &host, int port);
+    bool connect(const std::string &host, int port, const std::string &passwd);
 
     /**
      * 从redis中根据指定的键取到指定的值
